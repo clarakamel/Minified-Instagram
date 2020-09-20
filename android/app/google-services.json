@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "874879703314",
+    "firebase_url": "https://webops-task.firebaseio.com",
+    "project_id": "webops-task",
+    "storage_bucket": "webops-task.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:874879703314:android:cd0d29343eb4a4d358fbcb",
+        "android_client_info": {
+          "package_name": "com.minifiedinstagram"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "874879703314-q39on9oeoqlbh15o0q0ua348mfus0u68.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQSUU3dw-l3hg_ML5bpv_HAI7F8uOoTzk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "874879703314-q39on9oeoqlbh15o0q0ua348mfus0u68.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
