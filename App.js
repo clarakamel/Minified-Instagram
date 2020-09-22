@@ -1,12 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, TouchableWithoutFeedback, Keyboard} from 'react-native';
-
-import {
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import appReducers from './src/redux/reducers/appReducers';
+import {connect} from 'react-redux';
+import {loginUser} from './src/redux/actions/appActions';
+import {bindActionCreators} from 'redux';
 import auth from '@react-native-firebase/auth';
 import Login from './src/screens/login';
 import NewsFeed from './src/screens/newsfeed';
@@ -19,6 +16,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import AppNavigator from './src/routes/AppNavigator';
+import store from './src/redux/configureStore';
 
 const App: () => React$Node = () => {
   // Set an initializing state whilst Firebase connects
@@ -54,12 +52,11 @@ const App: () => React$Node = () => {
             </Stack.Navigator>
           </TouchableWithoutFeedback>
         </NavigationContainer>
-        {/* <AppNavigator /> */}
       </>
     );
   }
   const Tab = createBottomTabNavigator();
-
+  console.log('user info', user);
   return (
     <NavigationContainer>
       <Tab.Navigator>
@@ -89,4 +86,21 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+const mapStateToProps = (state) => ({
+  user: useState.user,
+  initializing: state.initializing,
+});
+
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     loginUser: (user) => {
+//       dispatch(loginUser(user));
+//     },
+//   };
+// };
+const ActionCreators = Object.assign({}, loginUser);
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators(ActionCreators, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
