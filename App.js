@@ -1,23 +1,20 @@
-import React, {useState, useEffect} from 'react';
-import {StyleSheet, TouchableWithoutFeedback, Keyboard} from 'react-native';
-import appReducers from './src/redux/reducers/appReducers';
+/* eslint-disable prettier/prettier */
+import React, {useState, useEffect, Component} from 'react';
 import {connect} from 'react-redux';
-import {loginUser} from './src/redux/actions/appActions';
-import {bindActionCreators} from 'redux';
 import auth from '@react-native-firebase/auth';
 import Login from './src/screens/login';
 import NewsFeed from './src/screens/newsfeed';
 import Profile from './src/screens/profile';
 import BucketList from './src/screens/bucketlist';
-import Navigation from './src/components/navigation';
 import AddPost from './src/screens/addpost';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import AppNavigator from './src/routes/AppNavigator';
+import configureStore from './src/redux/configureStore';
 
-const App: () => React$Node = () => {
+const App = (props) => {
+  const store = configureStore();
   // Set an initializing state whilst Firebase connects
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
@@ -25,6 +22,16 @@ const App: () => React$Node = () => {
   // Handle user state changes
   function onAuthStateChanged(user) {
     setUser(user);
+
+    store.dispatch({
+      type: 'ADD_USER',
+      user,
+    });
+
+    store.subscribe(
+      () => console.log('state updated'),
+      console.log(store.getState()),
+    );
     if (initializing) setInitializing(false);
   }
 
@@ -32,11 +39,6 @@ const App: () => React$Node = () => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber; // unsubscribe on unmount
   });
-
-  //sign out method
-  // auth()
-  //   .signOut()
-  //   .then(() => console.log('User signed out!'));
 
   const Stack = createStackNavigator();
 
@@ -97,12 +99,6 @@ const App: () => React$Node = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  loginInputs: {
-    padding: 40,
-  },
-});
-
 const mapStateToProps = (state) => ({
   user: state.user,
   initializing: state.initializing,
@@ -116,9 +112,9 @@ const mapStateToProps = (state) => ({
 //   };
 // };
 
-const ActionCreators = Object.assign({}, loginUser());
-const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators(ActionCreators, dispatch),
-});
+// const store = configureStore();
+// store.dispatch({
+//   type: 'LOGIN_USER',
+// });
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps)(App);
