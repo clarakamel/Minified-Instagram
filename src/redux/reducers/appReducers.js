@@ -1,20 +1,33 @@
 /* eslint-disable prettier/prettier */
-import {loginUser} from '../actions/appActions';
 
 const initialState = {
-  user: [''],
+  user: '',
   initializing: [],
   email: [],
   pass: [],
 };
 
-const appReducers = (state = initialState, action) => {
-  console.log('userReducer was called with state', state, 'and action', action)
+function appReducers(state = initialState, action) {
+  console.log(
+    'userReducer was called with state',
+    state,
+    'and action',
+    action.type,
+  );
   if (action.type === 'LOGIN_USER') {
-    return {...state, user: [...state.user, action.user]};
+    return {
+      ...state,
+      email: [...state.email, action.email],
+      pass: [...state.pass, action.pass],
+    };
+  } else if (action.type === 'ADD_USER') {
+    return {
+      ...state,
+      user: [...state.user, action.user],
+    };
   } else {
     return state;
   }
-};
+}
 
 export default appReducers;
