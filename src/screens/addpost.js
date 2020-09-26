@@ -9,12 +9,15 @@ import {
   TouchableOpacity,
   View,
   StyleSheet,
+  Header,
+  Button,
 } from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
-import Navigator from '../components/navigation';
+import Navigator from '../components/header';
 import ImagePicker from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
 import * as Progress from 'react-native-progress';
+// import {Divider} from 'react-native-elements';
 
 // import firebase from '@react-native-firebase';
 // import axios from 'axios';
@@ -23,6 +26,8 @@ export default function AddPost({navigation}) {
   const [image, setImage] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [transferred, setTransferred] = useState(0);
+  const [url, setUrl] = useState('');
+  const [ref, setRef] = useState('');
 
   const selectImage = () => {
     const options = {
@@ -33,6 +38,7 @@ export default function AddPost({navigation}) {
         path: 'images',
       },
     };
+
     // const source = {uri: '../assets/instagram.jpg'};
     // console.log(source);
     // setImage(source);
@@ -52,18 +58,23 @@ export default function AddPost({navigation}) {
   };
 
   const uploadImage = async () => {
-    const {uri} = image;
-    const filename = uri.substring(uri.lastIndexOf('/') + 1);
-    const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
-    setUploading(true);
-    setTransferred(0);
-    const task = storage().ref(filename).putFile(uploadUri);
-    // set progress state
-    task.on('state_changed', (snapshot) => {
-      setTransferred(
-        Math.round(snapshot.bytesTransferred / snapshot.totalBytes) * 10000,
-      );
-    });
+    async () => {
+      // path to existing file on filesystem
+      const pathToFile = image.uri;
+      // uploads file
+      await ref.putFile(pathToFile);
+      const task = ref.putFile(pathToFile);
+
+      task.on('state_changed', (taskSnapshot) => {
+        console.log(
+          `${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`,
+        );
+      });
+
+      task.then(() => {
+        console.log('Image uploaded to the bucket!');
+      });
+    };
     try {
       await task;
     } catch (e) {
@@ -77,24 +88,15 @@ export default function AddPost({navigation}) {
     setImage(null);
   };
 
+  useEffect(() => {
+    // firebase.initializeApp();
+    setRef(storage().ref('instagram.jpg'));
+    setUrl(storage().ref('instagram.jpg').getDownloadURL());
+  }, []);
+
   const Stack = createStackNavigator();
   return (
-    <SafeAreaView>
-      <View style={styles.imagesContainer}>
-        <Image
-          source={require('../assets/instagram.jpg')}
-          style={{width: 100, height: 100}}
-        />
-
-        <Image
-          source={require('../assets/instagram.jpg')}
-          style={{width: 100, height: 100}}
-        />
-        <Image
-          source={require('../assets/instagram.jpg')}
-          style={{width: 100, height: 100}}
-        />
-      </View>
+    <SafeAreaView style={styles.container}>
       <TouchableOpacity style={styles.selectButton} onPress={selectImage}>
         <Text style={styles.buttonText}>Pick an image</Text>
       </TouchableOpacity>
@@ -107,9 +109,11 @@ export default function AddPost({navigation}) {
             <Progress.Bar progress={transferred} width={300} />
           </View>
         ) : (
-          <TouchableOpacity style={styles.uploadButton} onPress={uploadImage}>
-            <Text style={styles.buttonText}>Add post</Text>
-          </TouchableOpacity>
+          <View>
+            <TouchableOpacity style={styles.uploadButton} onPress={uploadImage}>
+              <Text style={styles.buttonText}>Upload Image</Text>
+            </TouchableOpacity>
+          </View>
         )}
       </View>
     </SafeAreaView>
@@ -120,12 +124,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'flex-start',
-  },
-  uploadButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 200,
+    marginTop: 150,
   },
   imagesContainer: {
     flex: 1,
@@ -133,5 +132,34 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     marginTop: 50,
     flexDirection: 'row',
+  },
+  imageBox: {
+    width: 200,
+    height: 200,
+  },
+  imageContainer: {
+    marginTop: 30,
+    marginBottom: 50,
+    alignItems: 'center',
+  },
+  uploadButton: {
+    borderRadius: 5,
+    width: 150,
+    height: 50,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+  selectButton: {
+    borderRadius: 5,
+    width: 150,
+    height: 50,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  progressBarContainer: {
+    marginTop: 20,
   },
 });
