@@ -16,7 +16,6 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import AppNavigator from './src/routes/AppNavigator';
-import store from './src/redux/configureStore';
 
 const App: () => React$Node = () => {
   // Set an initializing state whilst Firebase connects
@@ -46,11 +45,23 @@ const App: () => React$Node = () => {
     return (
       <>
         <NavigationContainer>
-          <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-            <Stack.Navigator initialRouteName="NewsFeed">
-              <Stack.Screen name="Login" component={Login} />
-            </Stack.Navigator>
-          </TouchableWithoutFeedback>
+          <Stack.Navigator initialRouteName="Login">
+            <Stack.Screen
+              name="Login"
+              headerTitleAlign="center"
+              component={Login}
+            />
+            <Stack.Screen
+              name="NewsFeed"
+              component={NewsFeed}
+              headerTitleAlign="center"
+            />
+            <Stack.Screen
+              name="AddPost"
+              component={AddPost}
+              headerTitleAlign="center"
+            />
+          </Stack.Navigator>
         </NavigationContainer>
       </>
     );
@@ -65,6 +76,7 @@ const App: () => React$Node = () => {
           component={NewsFeed}
           options={{title: 'NewsFeed'}}
         />
+
         <Tab.Screen
           name="Profile"
           component={Profile}
@@ -74,6 +86,11 @@ const App: () => React$Node = () => {
           name="BucketList"
           component={BucketList}
           options={{title: 'Bucketlist'}}
+        />
+        <Stack.Screen
+          name="AddPost"
+          component={AddPost}
+          headerTitleAlign="center"
         />
       </Tab.Navigator>
     </NavigationContainer>
@@ -87,7 +104,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
-  user: useState.user,
+  user: state.user,
   initializing: state.initializing,
 });
 
@@ -98,7 +115,8 @@ const mapStateToProps = (state) => ({
 //     },
 //   };
 // };
-const ActionCreators = Object.assign({}, loginUser);
+
+const ActionCreators = Object.assign({}, loginUser());
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(ActionCreators, dispatch),
 });
