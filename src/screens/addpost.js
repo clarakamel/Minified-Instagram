@@ -14,14 +14,12 @@ import {createStackNavigator} from '@react-navigation/stack';
 import Navigator from '../components/navigation';
 import ImagePicker from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
-import * as firebase from 'firebase';
+import * as Progress from 'react-native-progress';
+
 // import firebase from '@react-native-firebase';
 // import axios from 'axios';
 
 export default function AddPost({navigation}) {
-  const [isLoading, setLoading] = useState(true);
-  const [data, setData] = useState([]);
-
   const [image, setImage] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [transferred, setTransferred] = useState(0);
@@ -35,6 +33,9 @@ export default function AddPost({navigation}) {
         path: 'images',
       },
     };
+    // const source = {uri: '../assets/instagram.jpg'};
+    // console.log(source);
+    // setImage(source);
     ImagePicker.showImagePicker(options, (response) => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
@@ -78,7 +79,22 @@ export default function AddPost({navigation}) {
 
   const Stack = createStackNavigator();
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView>
+      <View style={styles.imagesContainer}>
+        <Image
+          source={require('../assets/instagram.jpg')}
+          style={{width: 100, height: 100}}
+        />
+
+        <Image
+          source={require('../assets/instagram.jpg')}
+          style={{width: 100, height: 100}}
+        />
+        <Image
+          source={require('../assets/instagram.jpg')}
+          style={{width: 100, height: 100}}
+        />
+      </View>
       <TouchableOpacity style={styles.selectButton} onPress={selectImage}>
         <Text style={styles.buttonText}>Pick an image</Text>
       </TouchableOpacity>
@@ -92,7 +108,7 @@ export default function AddPost({navigation}) {
           </View>
         ) : (
           <TouchableOpacity style={styles.uploadButton} onPress={uploadImage}>
-            <Text style={styles.buttonText}>Upload image</Text>
+            <Text style={styles.buttonText}>Add post</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -104,6 +120,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
+  uploadButton: {
+    alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 200,
+  },
+  imagesContainer: {
+    flex: 1,
+    alignItems: 'flex-start',
+    justifyContent: 'space-around',
+    marginTop: 50,
+    flexDirection: 'row',
   },
 });
