@@ -8,6 +8,10 @@ target 'MinifiedInstagram' do
 
   use_react_native!(:path => config["reactNativePath"])
 
+  pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
+
+  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
+
   target 'MinifiedInstagramTests' do
     inherit! :complete
     # Pods for testing
