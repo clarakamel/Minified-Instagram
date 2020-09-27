@@ -1,11 +1,21 @@
 /* eslint-disable prettier/prettier */
 import React, {useState} from 'react';
-import {StyleSheet, Text, View, Button, TextInput} from 'react-native';
-import {ReactNativeFirebase} from '@react-native-firebase/app';
+import {
+  StyleSheet,
+  View,
+  Button,
+  TextInput,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Image,
+  Alert,
+} from 'react-native';
 import auth from '@react-native-firebase/auth';
-export default function Login() {
+import {connect} from 'react-redux';
+import configureStore from '../redux/configureStore';
 
-//initializing states for email and password
+const Login = (props) => {
+  //initializing states for email and password
   const [email, setEmail] = useState('');
   const [pass, setPass] = useState('');
 
@@ -15,6 +25,7 @@ export default function Login() {
   const passInput = (pass) => {
     setPass(pass);
   };
+  const store = configureStore();
 
   //sign in method
   const signIn = () => {
@@ -22,38 +33,55 @@ export default function Login() {
       .signInWithEmailAndPassword(email, pass)
 
       .then(() => {
-        console.log('User account created & signed in!');
+        console.log('User signed in!');
+
+        store.dispatch({
+          type: 'LOGIN_USER',
+          email,
+          pass,
+        });
+
+        store.subscribe(
+          () => console.log('state updated'),
+          console.log(store.getState()),
+        );
       })
       .catch((error) => {
         if (error.code === 'auth/email-already-in-use') {
-          console.log('That email address is already in use!');
+          Alert.alert('That email address is already in use!');
         }
 
         if (error.code === 'auth/invalid-email') {
-          console.log('That email address is invalid!');
+          Alert.alert('Invalid e-mail address');
         }
 
         console.error(error);
       });
   };
   return (
-    <View style={styles.container}>
-      <TextInput
-        style={styles.inputFields}
-        placeholder="E-mail"
-        onChangeText={emailInput}
-      />
-      <TextInput
-        style={styles.inputFields}
-        placeholder="Password"
-        onChangeText={passInput}
-      />
-      <View style={styles.loginButton}>
-        <Button title="Login" color="#841584" onPress={() => signIn()} />
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <View style={styles.container}>
+        <Image
+          style={styles.image}
+          source={require('../assets/logo-instagram-png-13554.png')}
+        />
+        <TextInput
+          style={styles.inputFields}
+          placeholder="E-mail"
+          onChangeText={emailInput}
+        />
+        <TextInput
+          style={styles.inputFields}
+          placeholder="Password"
+          onChangeText={passInput}
+        />
+        <View style={styles.loginButton}>
+          <Button title="Login" color="#841584" onPress={() => signIn()} />
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -62,7 +90,6 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     width: 100,
-    // marginTop: 200,
     alignSelf: 'center',
   },
   inputFields: {
@@ -74,4 +101,17 @@ const styles = StyleSheet.create({
     borderStyle: 'dashed',
     alignSelf: 'center',
   },
+  image: {
+    width: 100,
+    height: 100,
+    marginLeft: 140,
+    marginBottom: 50,
+  },
 });
+
+const mapStateToProps = (state) => ({
+  email: state.email,
+  pass: state.pass,
+});
+
+export default connect(mapStateToProps)(Login);
