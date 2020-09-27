@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   SafeAreaView,
   Text,
@@ -9,14 +9,11 @@ import {
   TouchableOpacity,
   View,
   StyleSheet,
-  Header,
-  Button,
 } from 'react-native';
-import {createStackNavigator} from '@react-navigation/stack';
-import Navigator from '../components/header';
 import ImagePicker from 'react-native-image-picker';
-import storage from '@react-native-firebase/storage';
 import * as Progress from 'react-native-progress';
+const axios = require('axios');
+import {Header} from 'react-native-elements';
 // import {Divider} from 'react-native-elements';
 
 // import firebase from '@react-native-firebase';
@@ -26,8 +23,6 @@ export default function AddPost({navigation}) {
   const [image, setImage] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [transferred, setTransferred] = useState(0);
-  const [url, setUrl] = useState('');
-  const [ref, setRef] = useState('');
 
   const selectImage = () => {
     const options = {
@@ -57,46 +52,56 @@ export default function AddPost({navigation}) {
     });
   };
 
-  const uploadImage = async () => {
-    async () => {
-      // path to existing file on filesystem
-      const pathToFile = image.uri;
-      // uploads file
-      await ref.putFile(pathToFile);
-      const task = ref.putFile(pathToFile);
+  //not working
+  const createFormData = (image, body) => {
+    const data = new FormData();
 
-      task.on('state_changed', (taskSnapshot) => {
-        console.log(
-          `${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`,
-        );
-      });
+    data.append('photo', {
+      name: image.fileName,
+      type: image.type,
+      uri:
+        Platform.OS === 'android'
+          ? image.uri
+          : image.uri.replace('file://', ''),
+    });
 
-      task.then(() => {
-        console.log('Image uploaded to the bucket!');
-      });
-    };
-    try {
-      await task;
-    } catch (e) {
-      console.error(e);
-    }
-    setUploading(false);
-    Alert.alert(
-      'Photo uploaded!',
-      'Your photo has been uploaded to Firebase Cloud Storage!',
-    );
-    setImage(null);
+    Object.keys(body).forEach((key) => {
+      data.append(key, body[key]);
+    });
+
+    return data;
   };
 
-  useEffect(() => {
-    // firebase.initializeApp();
-    setRef(storage().ref('instagram.jpg'));
-    setUrl(storage().ref('instagram.jpg').getDownloadURL());
-  }, []);
+  //not working
+  const handleUploadPhoto = () => {
+    axios
+      .post('http://10.0.2.2:3000/api/upload', {
+        method: 'POST',
+        body: createFormData(image, {userId: '123'}),
+      })
+      .then((response) => response.json())
+      .then((response) => {
+        console.log('upload succes', response);
+        Alert.alert('Upload success!');
+        setImage(null);
+      })
+      .catch((error) => {
+        console.log('upload error', error);
+        Alert.alert('Upload failed!');
+      });
+  };
 
-  const Stack = createStackNavigator();
   return (
     <SafeAreaView style={styles.container}>
+      <View style={styles.headerContainer}>
+        <Header
+          centerComponent={{
+            text: 'Add a Post',
+            style: {color: '#fff'},
+          }}
+          centerContainerStyle={{flex: 3}}
+        />
+      </View>
       <TouchableOpacity style={styles.selectButton} onPress={selectImage}>
         <Text style={styles.buttonText}>Pick an image</Text>
       </TouchableOpacity>
@@ -110,7 +115,9 @@ export default function AddPost({navigation}) {
           </View>
         ) : (
           <View>
-            <TouchableOpacity style={styles.uploadButton} onPress={uploadImage}>
+            <TouchableOpacity
+              style={styles.uploadButton}
+              onPress={handleUploadPhoto}>
               <Text style={styles.buttonText}>Upload Image</Text>
             </TouchableOpacity>
           </View>
@@ -124,14 +131,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    marginTop: 150,
+    justifyContent: 'center',
   },
-  imagesContainer: {
+
+  headerContainer: {
     flex: 1,
-    alignItems: 'flex-start',
-    justifyContent: 'space-around',
-    marginTop: 50,
-    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    width: 500,
   },
   imageBox: {
     width: 200,
@@ -150,6 +156,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 20,
+    marginBottom: 200,
   },
   selectButton: {
     borderRadius: 5,
