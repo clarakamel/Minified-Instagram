@@ -14,7 +14,6 @@ export default function Profile() {
             text: 'Profile',
             style: {color: '#fff'},
           }}
-          centerContainerStyle={{flex: 3}}
         />
       </View>
       <Text style={styles.nameContainer}>

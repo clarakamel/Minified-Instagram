@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -46,7 +46,6 @@ const BucketList = () => {
               text: 'Bucketlist',
               style: {color: '#fff'},
             }}
-            centerContainerStyle={{flex: 3}}
           />
         </View>
         <TextInput

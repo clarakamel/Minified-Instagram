@@ -14,10 +14,6 @@ import ImagePicker from 'react-native-image-picker';
 import * as Progress from 'react-native-progress';
 const axios = require('axios');
 import {Header} from 'react-native-elements';
-// import {Divider} from 'react-native-elements';
-
-// import firebase from '@react-native-firebase';
-// import axios from 'axios';
 
 export default function AddPost({navigation}) {
   const [image, setImage] = useState(null);
@@ -99,7 +95,6 @@ export default function AddPost({navigation}) {
             text: 'Add a Post',
             style: {color: '#fff'},
           }}
-          centerContainerStyle={{flex: 3}}
         />
       </View>
       <TouchableOpacity style={styles.selectButton} onPress={selectImage}>

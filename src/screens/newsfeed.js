@@ -2,7 +2,6 @@
 import React from 'react';
 import {Button, SafeAreaView, StyleSheet, View} from 'react-native';
 import auth from '@react-native-firebase/auth';
-import {createStackNavigator} from '@react-navigation/stack';
 import {Header} from 'react-native-elements';
 
 export default function NewsFeed({navigation}) {
@@ -11,8 +10,6 @@ export default function NewsFeed({navigation}) {
       .signOut()
       .then(() => console.log('User signed out!'));
   };
-
-  const Stack = createStackNavigator();
 
   return (
     <SafeAreaView style={styles.container}>

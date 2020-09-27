@@ -12,7 +12,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import configureStore from './src/redux/configureStore';
-import {View, Text, StyleSheet} from 'react-native';
+
 
 const App = (props) => {
   const store = configureStore();
