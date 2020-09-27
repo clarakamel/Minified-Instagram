@@ -7,7 +7,8 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "postinstall": "node_modules/.bin/rn-nodeify --install crypto,fs,https,http --hack"
   },
   "dependencies": {
     "@expo/vector-icons": "^10.2.1",
@@ -21,21 +22,44 @@
     "@react-navigation/bottom-tabs": "^5.8.0",
     "@react-navigation/native": "^5.7.3",
     "@react-navigation/stack": "^5.9.0",
+    "@tradle/react-native-http": "^2.0.0",
     "@unimodules/core": "^5.5.0",
+    "Base64": "^1.1.0",
     "axios": "^0.20.0",
+    "body-parser": "^1.19.0",
+    "crypto": "^1.0.1",
+    "events": "^3.2.0",
     "expo-font": "^8.3.0",
+    "express": "^4.17.1",
     "firebase": "^7.21.0",
     "fontfaceobserver": "^2.1.0",
+    "fs": "0.0.1-security",
+    "http": "0.0.1-security",
+    "https-browserify": "~0.0.0",
+    "mkdirp": "^1.0.4",
+    "multer": "^1.4.2",
+    "net": "^1.0.2",
+    "os": "^0.1.1",
+    "path": "^0.12.7",
+    "querystring": "^0.2.0",
     "react": "16.13.1",
     "react-native": "0.63.2",
+    "react-native-crypto": "^2.1.0",
+    "react-native-elements": "^2.3.2",
     "react-native-gesture-handler": "^1.8.0",
     "react-native-image-picker": "^2.3.4",
+    "react-native-level-fs": "^3.0.0",
     "react-native-progress": "^4.1.2",
+    "react-native-randombytes": "^3.0.0",
     "react-native-reanimated": "^1.13.0",
     "react-native-safe-area-context": "^3.1.8",
     "react-native-screens": "^2.11.0",
+    "react-native-vector-icons": "^7.1.0",
     "react-redux": "^7.2.1",
-    "redux": "^4.0.5"
+    "redux": "^4.0.5",
+    "rn-nodeify": "^10.2.0",
+    "url": "^0.11.0",
+    "zlib": "^1.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",
@@ -50,5 +74,17 @@
   "jest": {
     "preset": "react-native"
   },
-  "proxy": "http://localhost:3000"
+  "proxy": "http://localhost:3000",
+  "react-native": {
+    "crypto": "react-native-crypto",
+    "https": "https-browserify",
+    "fs": "react-native-level-fs",
+    "http": "@tradle/react-native-http"
+  },
+  "browser": {
+    "crypto": "react-native-crypto",
+    "https": "https-browserify",
+    "fs": "react-native-level-fs",
+    "http": "@tradle/react-native-http"
+  }
 }
