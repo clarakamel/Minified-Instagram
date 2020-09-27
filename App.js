@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, {useState, useEffect, Component} from 'react';
+import React, {useState, useEffect} from 'react';
 import {connect} from 'react-redux';
 import auth from '@react-native-firebase/auth';
 import Login from './src/screens/login';
@@ -12,6 +12,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import configureStore from './src/redux/configureStore';
+import {View, Text, StyleSheet} from 'react-native';
 
 const App = (props) => {
   const store = configureStore();
@@ -33,6 +34,8 @@ const App = (props) => {
       console.log(store.getState()),
     );
     if (initializing) setInitializing(false);
+
+    //storing the bucketlist items
   }
 
   useEffect(() => {
@@ -40,34 +43,19 @@ const App = (props) => {
     return subscriber; // unsubscribe on unmount
   });
 
-  const Stack = createStackNavigator();
-
   if (initializing) return null;
   if (!user) {
     return (
       <>
         <NavigationContainer>
           <Stack.Navigator initialRouteName="Login">
-            <Stack.Screen
-              name="Login"
-              headerTitleAlign="center"
-              component={Login}
-            />
-            <Stack.Screen
-              name="NewsFeed"
-              component={NewsFeed}
-              headerTitleAlign="center"
-            />
-            <Stack.Screen
-              name="AddPost"
-              component={AddPost}
-              headerTitleAlign="center"
-            />
+            <Stack.Screen name="Login" component={Login} />
           </Stack.Navigator>
         </NavigationContainer>
       </>
     );
   }
+  const Stack = createStackNavigator();
   const Tab = createBottomTabNavigator();
   console.log('user info', user);
   return (
@@ -76,24 +64,20 @@ const App = (props) => {
         <Tab.Screen
           name="Newsfeed"
           component={NewsFeed}
-          options={{title: 'NewsFeed'}}
+          options={{title: 'Newsfeed'}}
         />
-
         <Tab.Screen
           name="Profile"
           component={Profile}
           options={{title: 'Profile'}}
         />
+
         <Tab.Screen
           name="BucketList"
           component={BucketList}
           options={{title: 'Bucketlist'}}
         />
-        <Stack.Screen
-          name="AddPost"
-          component={AddPost}
-          headerTitleAlign="center"
-        />
+        <Stack.Screen name="Add Post" component={AddPost} />
       </Tab.Navigator>
     </NavigationContainer>
   );
@@ -104,17 +88,4 @@ const mapStateToProps = (state) => ({
   initializing: state.initializing,
 });
 
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     loginUser: (user) => {
-//       dispatch(loginUser(user));
-//     },
-//   };
-// };
-
-// const store = configureStore();
-// store.dispatch({
-//   type: 'LOGIN_USER',
-// });
-
-export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps, null)(App);
