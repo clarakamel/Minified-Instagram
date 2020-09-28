@@ -19,6 +19,7 @@ export default function AddPost({navigation}) {
   const [image, setImage] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [transferred, setTransferred] = useState(0);
+  const [data, setData] = useState(null);
 
   const selectImage = () => {
     const options = {
@@ -48,34 +49,24 @@ export default function AddPost({navigation}) {
     });
   };
 
-  //not working
   const createFormData = (image, body) => {
     const data = new FormData();
 
     data.append('photo', {
-      name: image.fileName,
-      type: image.type,
       uri:
         Platform.OS === 'android'
           ? image.uri
           : image.uri.replace('file://', ''),
     });
-
-    Object.keys(body).forEach((key) => {
-      data.append(key, body[key]);
-    });
-
     return data;
   };
 
-  //not working
+  //uploading image to json server
   const handleUploadPhoto = () => {
     axios
-      .post('http://10.0.2.2:3000/api/upload', {
-        method: 'POST',
-        body: createFormData(image, {userId: '123'}),
+      .post('http://10.0.2.2:3000/images', {
+        body: createFormData(image),
       })
-      .then((response) => response.json())
       .then((response) => {
         console.log('upload succes', response);
         Alert.alert('Upload success!');
@@ -86,6 +77,20 @@ export default function AddPost({navigation}) {
         Alert.alert('Upload failed!');
       });
   };
+
+  // const getImage = () => {
+  //   axios
+  //     .get('http://10.0.2.2:3000/posts/')
+  //     .then((resp) => {
+  //       setData(resp.data);
+  //       data.forEach((e) => {
+  //         console.log(`${e.body}`);
+  //       });
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // };
 
   return (
     <SafeAreaView style={styles.container}>
