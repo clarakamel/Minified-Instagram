@@ -31,9 +31,6 @@ export default function AddPost({navigation}) {
       },
     };
 
-    // const source = {uri: '../assets/instagram.jpg'};
-    // console.log(source);
-    // setImage(source);
     ImagePicker.showImagePicker(options, (response) => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
@@ -77,20 +74,6 @@ export default function AddPost({navigation}) {
         Alert.alert('Upload failed!');
       });
   };
-
-  // const getImage = () => {
-  //   axios
-  //     .get('http://10.0.2.2:3000/posts/')
-  //     .then((resp) => {
-  //       setData(resp.data);
-  //       data.forEach((e) => {
-  //         console.log(`${e.body}`);
-  //       });
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // };
 
   return (
     <SafeAreaView style={styles.container}>

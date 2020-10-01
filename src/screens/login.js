@@ -51,11 +51,9 @@ const Login = (props) => {
           Alert.alert('That email address is already in use!');
         }
 
-        if (error.code === 'auth/invalid-email') {
+        if (error.code === 'auth/user-not-found') {
           Alert.alert('Invalid e-mail address');
         }
-
-        console.error(error);
       });
   };
   return (

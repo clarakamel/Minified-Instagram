@@ -43,6 +43,7 @@ const App = (props) => {
     return subscriber; // unsubscribe on unmount
   });
 
+  const Stack = createStackNavigator();
   if (initializing) return null;
   if (!user) {
     return (
@@ -55,7 +56,7 @@ const App = (props) => {
       </>
     );
   }
-  const Stack = createStackNavigator();
+
   const Tab = createBottomTabNavigator();
   console.log('user info', user);
   return (
